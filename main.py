@@ -28,7 +28,7 @@ async def on_message(message):
     if "goat" in message.content.lower():
         author_id = str(message.author.id)
         users[author_id] = users.get(author_id, 0) + 1
-        await message.channel.send(f"Bleat! You bleated {users[author_id]} times.")
+        await message.channel.send(f"Bleat! {message.author.name}, You bleated {users[author_id]} times.")
         with open("users.txt", "w") as file:
             json.dump(users, file)
 
