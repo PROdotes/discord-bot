@@ -4,34 +4,37 @@ import json
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
-@client.event
-async def on_ready():
-    print('Logged in as {0.user}'.format(client))
-
-@client.event
-async def on_message(message):
-    print(message)
-    print(message.channel.permissions_for(message.author))
-    print("#"+message.content+"#")
-
-    if message.author == client.user:
-        return
-
-    if "goat" in message.content.lower():
-        author_id = str(message.author.id)
-        users[author_id] = users.get(author_id, 0) + 1
-        with open("users.txt", "w") as f:
-            json.dump(users, f)
-        await message.channel.send('Bleat! you bleated ' + str(users[author_id]) + ' times')
-
-# Load the users dictionary from file
+# Load the user dictionary from file
 try:
-    with open("users.txt") as f:
-        users = json.load(f)
+    with open("users.txt", "r") as file:
+        users = json.load(file)
 except FileNotFoundError:
     users = {}
 
-with open("C:\\Users\\prodo\\PycharmProjects\\discord\\key.txt") as file:
+
+# report when loaded
+@client.event
+async def on_ready():
+    print(f'Logged in as {client.user}')
+
+
+# listen to messages
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    # if someone mentions goat, tell them how many times they did it and save the new vaule
+    if "goat" in message.content.lower():
+        author_id = str(message.author.id)
+        users[author_id] = users.get(author_id, 0) + 1
+        await message.channel.send(f"Bleat! You bleated {users[author_id]} times.")
+        with open("users.txt", "w") as file:
+            json.dump(users, file)
+
+
+# read the token from the key file, so it's not in the git
+with open("key.txt") as file:
     TOKEN = file.read().strip()
-    print(TOKEN)
+    print(f'Your token is: {TOKEN}')
     client.run(TOKEN)
