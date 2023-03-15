@@ -1,4 +1,5 @@
 import discord
+import json
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
@@ -17,8 +18,18 @@ async def on_message(message):
         return
 
     if "goat" in message.content.lower():
-        await message.channel.send('Bleat!')
+        author_id = str(message.author.id)
+        users[author_id] = users.get(author_id, 0) + 1
+        with open("users.txt", "w") as f:
+            json.dump(users, f)
+        await message.channel.send('Bleat! you bleated ' + str(users[author_id]) + ' times')
 
+# Load the users dictionary from file
+try:
+    with open("users.txt") as f:
+        users = json.load(f)
+except FileNotFoundError:
+    users = {}
 
 with open("C:\\Users\\prodo\\PycharmProjects\\discord\\key.txt") as file:
     TOKEN = file.read().strip()
