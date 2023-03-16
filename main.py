@@ -46,3 +46,4 @@ with open("key.txt") as file:
     TOKEN = file.read().strip()
     print(f'Your token is: {TOKEN}')
     bot.run(TOKEN)
+
